@@ -10,64 +10,55 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Custom AppBar',
+      title: 'Swipeable List Example',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const CustomAppBarScreen(),
+      home: const SwipeableList(),
     );
   }
 }
 
-class CustomAppBarScreen extends StatelessWidget {
-  const CustomAppBarScreen({super.key});
+class SwipeableList extends StatelessWidget {
+  const SwipeableList({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.lightBlue,
-        centerTitle: true,
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                'https://media.istockphoto.com/id/1620926852/photo/white-sneaker-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=CcYj5SYufcuFxUy-l9u1pgDbz62Ty3aD_FaCpqBCaM8=',
-                height: 35,
-              ),
-            ),
-            const SizedBox(width: 10),
-            const Text(
-              'Sneaker\'s Heaven',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 30,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              debugPrint('Search pressed');
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              debugPrint('Menu pressed');
-            },
-          ),
-        ],
+        title: const Text('Swipe to Edit/Delete'),
+        backgroundColor: Colors.teal,
       ),
-      body: const Center(
-        child: Text(
-          'This is a custom AppBar!',
-          style: TextStyle(fontSize: 20),
-        ),
+      body: ListView.builder(
+        itemCount: 20, // Number of list items
+        itemBuilder: (context, index) {
+          return Dismissible(
+            key: Key(index.toString()),
+            direction: DismissDirection.endToStart,
+            onDismissed: (direction) {
+              // You can add your delete logic here
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Item $index deleted')));
+            },
+            background: Container(
+              color: Colors.red,
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: const Icon(Icons.delete, color: Colors.white),
+            ),
+            secondaryBackground: Container(
+              color: Colors.blue,
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: const Icon(Icons.edit, color: Colors.white),
+            ),
+            child: ListTile(
+              title: Text('Item $index'),
+              subtitle: const Text('Swipe left to delete, right to edit'),
+              tileColor: Colors.teal.shade50,
+            ),
+          );
+        },
       ),
     );
   }
