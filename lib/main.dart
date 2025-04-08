@@ -1,81 +1,125 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ProfilePage(),
+    return MaterialApp(
+      home: HomeScreen(),
     );
   }
 }
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
-
+class HomeScreen extends StatefulWidget {
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  String? _image;
-
-  // Function to simulate picking an image
-  Future<void> _pickImage() async {
-    setState(() {
-      // Simulate selecting an image
-      _image = "https://i.postimg.cc/025rcRrb/photo-2025-03-01-01-03-17.jpg";
-    });
-  }
+class _HomeScreenState extends State<HomeScreen> {
+  // Define the controller for the drawer
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey, // Set the scaffold key
       appBar: AppBar(
-        title: const Text('Profile Page'),
-        centerTitle: true,
-        backgroundColor: Colors.teal,
+        title: Text('Side Drawer Example'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GestureDetector(
-              onTap: _pickImage,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 70,
-                    // Check if the user has selected an image
-                    backgroundImage: _image != null
-                        ? NetworkImage(_image!)
-                        : const NetworkImage(
-                            'https://i.postimg.cc/025rcRrb/photo-2025-03-01-01-03-17.jpg'),
-                  ),
-                  // Show icon only if image is not selected
-                  if (_image == null)
-                    const Icon(Icons.add_a_photo, size: 30, color: Colors.white70),
-                ],
+        child: ElevatedButton(
+          onPressed: () {
+            // Open the drawer when the button is pressed
+            _scaffoldKey.currentState?.openDrawer();
+          },
+          child: Text('Open Drawer'),
+        ),
+      ),
+      drawer: AnimatedDrawer(), // Custom animated drawer
+    );
+  }
+}
+
+class AnimatedDrawer extends StatefulWidget {
+  @override
+  _AnimatedDrawerState createState() => _AnimatedDrawerState();
+}
+
+class _AnimatedDrawerState extends State<AnimatedDrawer> with TickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: Offset(-1, 0), // Initially off-screen to the left
+      end: Offset.zero, // End position (fully visible)
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return SlideTransition(
+          position: _slideAnimation,
+          child: child,
+        );
+      },
+      child: Drawer(
+        child: Container(
+          color: Colors.blueGrey,
+          child: Column(
+            children: [
+              UserAccountsDrawerHeader(
+                accountName: Text('Shahriar Ahmed Shovo'),
+                accountEmail: Text('shovo@gmail.com'),
+                currentAccountPicture: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: Icon(Icons.person, color: Colors.blueGrey),
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: _pickImage,
-              icon: const Icon(Icons.image),
-              label: const Text('Choose Image'),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 32, 224, 205)),
-            ),
-          ],
+              ListTile(
+                leading: Icon(Icons.home),
+                title: Text('Home'),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(Icons.settings),
+                title: Text('Settings'),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(Icons.account_circle),
+                title: Text('Profile'),
+                onTap: () {},
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _controller.forward(); // Start the slide animation when the drawer is initialized
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
