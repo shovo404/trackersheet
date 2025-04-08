@@ -1,74 +1,90 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const StyledTextApp());
+  runApp(const MyTwoScreenApp());
 }
 
-class StyledTextApp extends StatelessWidget {
-  const StyledTextApp({super.key});
+class MyTwoScreenApp extends StatelessWidget {
+  const MyTwoScreenApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Two Screen App',
       debugShowCheckedModeBanner: false,
-      home: const TextStyleScreen(),
+      home: const FirstScreen(),
     );
   }
 }
 
-class TextStyleScreen extends StatelessWidget {
-  const TextStyleScreen({super.key});
+class FirstScreen extends StatelessWidget {
+  const FirstScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Shahriar Ahmed Shovo',
-              style: TextStyle(
-                fontSize: 38,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 12, 5, 110),
+      appBar: AppBar(
+        title: const Text('Home Screen'),
+        backgroundColor: const Color.fromARGB(185, 32, 209, 159),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SecondScreen()),
+            );
+          },
+          child: const Text(
+            'Click to see My Car',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SecondScreen extends StatelessWidget {
+  const SecondScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Second Screen'),
+        backgroundColor: Colors.teal,
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              Image.network(
+                'https://i.postimg.cc/KjjthrKX/pexels-thuanymarcante-1805053.jpg',
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const CircularProgressIndicator();
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return const Text('Image failed to load.');
+                },
               ),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Shahriar Ahmed Shovo',
-              style: TextStyle(
-                fontSize: 20,
-                fontStyle: FontStyle.italic,
-                color: Colors.green,
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Back to First Screen'),
               ),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Shahriar Ahmed Shovo',
-              style: TextStyle(
-                fontSize: 10,
-                decoration: TextDecoration.underline,
-                color: Color.fromARGB(255, 154, 55, 147),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text(
-                  'Mobile Application',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.orange,
-                  ),
-                ),
-              ],
-            ),
-          ],
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
