@@ -1,95 +1,72 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const TrackerSheet());
+  runApp(const ImageGridApp());
 }
 
-class TrackerSheet extends StatelessWidget {
-  const TrackerSheet({super.key});
+class ImageGridApp extends StatelessWidget {
+  const ImageGridApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      title: 'Image Grid App',
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: const ImageGridScreen(),
     );
   }
 }
-
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login Successful')),
-      );
-    }
-  }
+class ImageGridScreen extends StatelessWidget {
+  const ImageGridScreen({super.key});
+  static const List<String> imageUrls = [
+    'https://images.pexels.com/photos/1193743/pexels-photo-1193743.jpeg?auto=compress&cs=tinysrgb&w=600', // Your first image
+    'https://images.pexels.com/photos/596710/pexels-photo-596710.jpeg?auto=compress&cs=tinysrgb&w=600', // image 2
+    'https://images.pexels.com/photos/45229/drop-of-water-inject-water-drip-45229.jpeg?auto=compress&cs=tinysrgb&w=600', // image 3
+    'https://images.pexels.com/photos/2695623/pexels-photo-2695623.jpeg?auto=compress&cs=tinysrgb&w=600', // image 4
+    'https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg?auto=compress&cs=tinysrgb&w=600', // image 5
+    'https://images.pexels.com/photos/842571/pexels-photo-842571.jpeg?auto=compress&cs=tinysrgb&w=600', // image 6
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Container(
-          width: 400.0, // Set the desired width
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 10.0,
-                offset: Offset(0, 4),
+      appBar: AppBar(
+        title: const Text('Image Grid'),
+        backgroundColor: Colors.teal,
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, 
+            crossAxisSpacing: 8.0, 
+            mainAxisSpacing: 8.0, 
+            childAspectRatio: 1, 
+          ),
+          itemCount: imageUrls.length,
+          itemBuilder: (context, index) {
+            return Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
-            ],
-          ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'User Login',
-                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  ImageGridScreen.imageUrls[index],
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Center(child: Icon(Icons.error));
+                  },
                 ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  controller: _usernameController,
-                  decoration: const InputDecoration(labelText: 'Username'),
-                  validator: (value) =>
-                      value == null || value.isEmpty ? 'Enter username' : null,
-                ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Password'),
-                  validator: (value) =>
-                      value == null || value.isEmpty ? 'Enter password' : null,
-                ),
-                const SizedBox(height: 32.0),
-                ElevatedButton(
-                  onPressed: _submitForm,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                  ),
-                  child: const Text('Login'),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
