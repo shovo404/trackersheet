@@ -4,74 +4,65 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool isDarkMode = false;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Animated Container',
+      title: 'Settings Toggle App',
       theme: ThemeData(
+        brightness: isDarkMode ? Brightness.dark : Brightness.light,
         primarySwatch: Colors.blue,
       ),
-      home: const AnimatedContainerScreen(),
+      home: SettingsScreen(
+        isDarkMode: isDarkMode,
+        onToggle: (value) {
+          setState(() {
+            isDarkMode = value;
+          });
+        },
+      ),
     );
   }
 }
 
-class AnimatedContainerScreen extends StatefulWidget {
-  const AnimatedContainerScreen({super.key});
+class SettingsScreen extends StatelessWidget {
+  final bool isDarkMode;
+  final ValueChanged<bool> onToggle;
 
-  @override
-  _AnimatedContainerScreenState createState() =>
-      _AnimatedContainerScreenState();
-}
-
-class _AnimatedContainerScreenState extends State<AnimatedContainerScreen> {
-  double _width = 200.0;
-  double _height = 200.0;
-  Color _color = Colors.blue;
-  BorderRadiusGeometry _borderRadius = BorderRadius.circular(20);
-
-  // Function to change the container's properties
-  void _changeContainerProperties() {
-    setState(() {
-      _width = _width == 200.0 ? 300.0 : 200.0;
-      _height = _height == 200.0 ? 300.0 : 200.0;
-      _color = _color == Colors.blue ? Colors.red : Colors.blue;
-      _borderRadius =
-          _borderRadius == BorderRadius.circular(20) ? BorderRadius.circular(0) : BorderRadius.circular(20);
-    });
-  }
+  const SettingsScreen({
+    super.key,
+    required this.isDarkMode,
+    required this.onToggle,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Animated Container'),
-        backgroundColor: Colors.blue,
+        title: const Text('Settings'),
+        centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AnimatedContainer(
-              duration: const Duration(seconds: 1), // Animation duration
-              width: _width,
-              height: _height,
-              decoration: BoxDecoration(
-                color: _color,
-                borderRadius: _borderRadius,
-              ),
-              curve: Curves.easeInOut, // Smooth transition curve
+      body: ListView(
+        children: [
+          const SizedBox(height: 20),
+          ListTile(
+            leading: const Icon(Icons.dark_mode),
+            title: const Text('Dark Mode'),
+            trailing: Switch(
+              value: isDarkMode,
+              onChanged: onToggle,
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _changeContainerProperties,
-              child: const Text('Change Properties'),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
