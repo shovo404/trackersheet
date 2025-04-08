@@ -1,246 +1,72 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const MaterialApp(home: BottomNavApp()));
-
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final List<Map<String, String>> products = [
-      {
-        'name': 'Sneakers',
-        'price': '\$59.99',
-        'image': 'https://i.postimg.cc/XJHQ5vdb/image.png'
-      },
-      {
-        'name': 'Headphones',
-        'price': '\$39.99',
-        'image': 'https://i.postimg.cc/N0tJqSBW/image.png'
-      },
-      {
-        'name': 'Smartwatch',
-        'price': '\$89.99',
-        'image': 'https://i.postimg.cc/fRn5mptJ/image.png'
-      },
-    ];
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(12),
-      itemCount: products.length,
-      itemBuilder: (context, index) {
-        final product = products[index];
-        return Card(
-          elevation: 5,
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          child: ListTile(
-            contentPadding: const EdgeInsets.all(12),
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                product['image']!,
-                width: 60,
-                height: 60,
-                fit: BoxFit.cover,
-              ),
-            ),
-            title: Text(
-              product['name']!,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text(
-              product['price']!,
-              style: const TextStyle(color: Colors.green),
-            ),
-            trailing: IconButton(
-              icon: const Icon(Icons.add_shopping_cart),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('${product['name']} added to cart!')),
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
+void main() {
+  runApp(const MyApp());
 }
 
-
-class SearchScreen extends StatelessWidget {
-  const SearchScreen({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Search Products',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'Search...',
-              prefixIcon: const Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              filled: true,
-              fillColor: Colors.grey[200],
-            ),
-          ),
-          const SizedBox(height: 40),
-          const Center(
-            child: Icon(
-              Icons.search_outlined,
-              size: 100,
-              color: Colors.blueAccent,
-            ),
-          ),
-          const Center(
-            child: Text(
-              'Search your favorite items',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-          )
-        ],
+    return MaterialApp(
+      title: 'Flutter App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: const ImageFromAssetsScreen(),
     );
   }
 }
 
-
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          CircleAvatar(
-            radius: 80,
-            backgroundImage: const NetworkImage(
-              'https://i.postimg.cc/mgCXnBfY/image.png',
-            ),
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            'Dr. MD Younus',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Nobel Laureate, Social Entrepreneur, and Philanthropist',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            'Muhammad Yunus is a Nobel Peace Prize-winning Bangladeshi social entrepreneur, renowned for pioneering the concept of microfinance. He is the founder of Grameen Bank, which provides small loans to impoverished people without requiring collateral. Yunus is also a prominent advocate for social business and has been recognized globally for his efforts in alleviating poverty through innovative economic models.',
-            style: TextStyle(fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.facebook),
-                onPressed: () {
-                  // Link to Facebook profile (Just an example link)
-                  print("Facebook Profile");
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.inbox),
-                onPressed: () {
-                  // Link to Instagram profile (Just an example link)
-                  print("Instagram Profile");
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.tab),
-                onPressed: () {
-                  // Link to Twitter profile (Just an example link)
-                  print("Twitter Profile");
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-
-
-
-class BottomNavApp extends StatefulWidget {
-  const BottomNavApp({super.key});
-
-  @override
-  State<BottomNavApp> createState() => _BottomNavAppState();
-}
-
-class _BottomNavAppState extends State<BottomNavApp> {
-  int _currentIndex = 0;
-
-  final List<Widget> _pages = const [
-    HomeScreen(),
-    SearchScreen(),
-    ProfileScreen(),
-  ];
+class ImageFromAssetsScreen extends StatelessWidget {
+  const ImageFromAssetsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Shop App',
+          'Forest Image Example',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 30,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.green,
       ),
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        child: _pages[_currentIndex],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        onTap: (index) => setState(() => _currentIndex = index),
-        items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person), label: 'Profile'),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text(
+              'Forest View',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.green,
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'A beautiful and serene view of a lush green forest.',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            Image.asset(
+              'images/forest.png',  // Correct asset path
+              width: 350,
+              height: 250,
+              fit: BoxFit.cover,
+            ),
+          ],
+        ),
       ),
     );
   }
