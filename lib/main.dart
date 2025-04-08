@@ -10,140 +10,65 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Date & Time Picker App',
+      title: 'Animated Container',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const DateTimePickerScreen(),
+      home: const AnimatedContainerScreen(),
     );
   }
 }
 
-class DateTimePickerScreen extends StatefulWidget {
-  const DateTimePickerScreen({super.key});
+class AnimatedContainerScreen extends StatefulWidget {
+  const AnimatedContainerScreen({super.key});
 
   @override
-  State<DateTimePickerScreen> createState() => _DateTimePickerScreenState();
+  _AnimatedContainerScreenState createState() =>
+      _AnimatedContainerScreenState();
 }
 
-class _DateTimePickerScreenState extends State<DateTimePickerScreen> {
-  DateTime? selectedDate;
-  TimeOfDay? selectedTime;
+class _AnimatedContainerScreenState extends State<AnimatedContainerScreen> {
+  double _width = 200.0;
+  double _height = 200.0;
+  Color _color = Colors.blue;
+  BorderRadiusGeometry _borderRadius = BorderRadius.circular(20);
 
-  Future<void> _pickDate() async {
-    final DateTime? date = await showDatePicker(
-      context: context,
-      initialDate: selectedDate ?? DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-
-    if (date != null) {
-      setState(() {
-        selectedDate = date;
-      });
-    }
-  }
-
-  Future<void> _pickTime() async {
-    final TimeOfDay? time = await showTimePicker(
-      context: context,
-      initialTime: selectedTime ?? TimeOfDay.now(),
-    );
-
-    if (time != null) {
-      setState(() {
-        selectedTime = time;
-      });
-    }
-  }
-
-  String get formattedDate {
-    if (selectedDate == null) return 'No Date Selected';
-    return '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}';
-  }
-
-  String get formattedTime {
-    if (selectedTime == null) return 'No Time Selected';
-    return selectedTime!.format(context);
+  // Function to change the container's properties
+  void _changeContainerProperties() {
+    setState(() {
+      _width = _width == 200.0 ? 300.0 : 200.0;
+      _height = _height == 200.0 ? 300.0 : 200.0;
+      _color = _color == Colors.blue ? Colors.red : Colors.blue;
+      _borderRadius =
+          _borderRadius == BorderRadius.circular(20) ? BorderRadius.circular(0) : BorderRadius.circular(20);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Time and Date',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 30,
-          ),
-        ),
-        centerTitle: true,
+        title: const Text('Animated Container'),
         backgroundColor: Colors.blue,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Date Picker Container
-            Container(
-              padding: const EdgeInsets.all(20),
-              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            AnimatedContainer(
+              duration: const Duration(seconds: 1), // Animation duration
+              width: _width,
+              height: _height,
               decoration: BoxDecoration(
-                color: Colors.lightBlueAccent.withAlpha((0.3 * 255).toInt()),
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.grey,
-                    blurRadius: 4,
-                    offset: Offset(2, 4),
-                  )
-                ],
+                color: _color,
+                borderRadius: _borderRadius,
               ),
-              child: Column(
-                children: [
-                  Text(
-                    'Selected Date: $formattedDate',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: _pickDate,
-                    child: const Text('Pick Date'),
-                  ),
-                ],
-              ),
+              curve: Curves.easeInOut, // Smooth transition curve
             ),
-
-            // Time Picker Container
-            Container(
-              padding: const EdgeInsets.all(20),
-              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              decoration: BoxDecoration(
-                color: Colors.greenAccent.withAlpha((0.3 * 255).toInt()),
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.grey,
-                    blurRadius: 4,
-                    offset: Offset(2, 4),
-                  )
-                ],
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    'Selected Time: $formattedTime',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: _pickTime,
-                    child: const Text('Pick Time'),
-                  ),
-                ],
-              ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _changeContainerProperties,
+              child: const Text('Change Properties'),
             ),
           ],
         ),
